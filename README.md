@@ -24,12 +24,24 @@ src
 ├── presentation
 
 ```
-* **Data**: Repositórios, APIs e manipulação de dados.
-* **Domain**: Lógica de negócio e casos de uso.
-* **Infra**: Serviços externos e integrações com terceiros.
-* **Main**: Inicialização e configuração do projeto.
-* **Presentation**: Responsável por lidar com a interface com o usuário na aplicação frontend.
-    * Inclui componentes de UI, páginas, rotas, estado de tela e interações do usuário.
+* **Data**: Implementação dos casos de uso, orquestração e adaptação entre domínio e infraestrutura.
+* **Domain**: Lógica de negócio pura, entidades, contratos e regras centrais.
+* **Infra**: Serviços externos, SDKs, clientes, bancos e integrações com terceiros.
+* **Main**: Bootstrap, composição de dependências e configuração do servidor.
+* **Presentation**: Interface HTTP e renderização das páginas com EJS.
+    * Inclui controllers, rotas, views, partials, layouts, validações e interações do usuário.
+
+## Arquitetura da aplicação
+
+Esta aplicação é pensada como um sistema completo renderizado no servidor com **Express + EJS**. A camada de presentation é responsável por receber as requisições HTTP e renderizar as páginas, enquanto domain e data concentram regra de negócio e orquestração. A camada infra isola integrações externas como Cloudinary e persistência.
+
+Fluxo esperado:
+
+1. A rota recebe a requisição na camada presentation.
+2. O controller valida a entrada e chama um caso de uso.
+3. O caso de uso executa a regra de negócio e usa contratos definidos no domínio.
+4. A infra fornece implementações concretas para serviços externos.
+5. O controller devolve uma view EJS com os dados preparados.
 
 ## Configuração do Cloudinary
 
@@ -67,3 +79,12 @@ Para rodar os testes, utilize o comando:
 ```bash
 pnpm test
 ```
+
+## Camadas detalhadas
+
+Consulte os documentos específicos de cada camada para entender responsabilidades e convenções:
+
+- [src/domain/README.md](/home/decante/Desktop/Desenvolvimento/ddd-cloudinary/src/domain/README.md)
+- [src/data/README.md](/home/decante/Desktop/Desenvolvimento/ddd-cloudinary/src/data/README.md)
+- [src/presentation/README.md](/home/decante/Desktop/Desenvolvimento/ddd-cloudinary/src/presentation/README.md)
+- [src/main/README.md](/home/decante/Desktop/Desenvolvimento/ddd-cloudinary/src/main/README.md)
