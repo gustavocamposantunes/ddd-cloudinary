@@ -12,7 +12,7 @@ Este documento explica o propósito e as responsabilidades da camada **infra** e
 
 - Clientes HTTP/SDKs de provedores externos (por exemplo, cliente Cloudinary).
 - Conexões com bancos de dados, pools e migrations (adapters de infraestutura).
-- Implementações de repositórios ou gateways que dependem de tecnologia (por exemplo, um `CloudinaryStorage` que implementa `IFileStorage`).
+- Implementações de repositórios ou gateways que dependem de tecnologia (por exemplo, um `CloudinaryStorageAdapter` que implementa `IFileStorage`).
 - Gerenciamento de arquivos, uploads, downloads e transformações relacionadas ao provedor.
 - Configuração de recursos de observabilidade (logs estruturados, métricas e tracing) atinentes à integração com terceiros.
 
@@ -28,7 +28,7 @@ Este documento explica o propósito e as responsabilidades da camada **infra** e
 src/infra/
 ├── cloudinary/          # adaptador e cliente para Cloudinary
 │   ├── cloudinaryClient.ts
-│   └── cloudinaryStorage.ts
+│   └── cloudinaryStorageAdapter.ts
 ├── database/            # conexões, pools, migrations
 │   ├── prismaClient.ts
 │   └── repositoryImplementations/
@@ -39,7 +39,7 @@ src/infra/
 
 ## Exemplo: integração com Cloudinary
 
-- Coloque o cliente do SDK e um adaptador que implemente o contrato usado pelo domínio. Por exemplo, o domínio define `IFileStorage` com métodos como `upload(file)` e `delete(publicId)`; a `src/infra/cloudinary/cloudinaryStorage.ts` implementa esse contrato usando o SDK do Cloudinary.
+- Coloque o cliente do SDK e um adaptador que implemente o contrato usado pelo domínio. Por exemplo, o domínio define `IFileStorage` com métodos como `upload(file)` e `delete(publicId)`; a `src/infra/cloudinary/cloudinaryStorageAdapter.ts` implementa esse contrato usando o SDK do Cloudinary.
 
 Variáveis de ambiente típicas:
 
@@ -52,7 +52,7 @@ CLOUDINARY_API_SECRET=your_api_secret
 Trecho de exemplo (pseudocódigo):
 
 ```ts
-// src/infra/cloudinary/cloudinaryStorage.ts
+// src/infra/cloudinary/cloudinaryStorageAdapter.ts
 import { v2 as cloudinary } from 'cloudinary'
 import { IFileStorage } from '../../domain/contracts/IFileStorage'
 
@@ -62,7 +62,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
-export class CloudinaryStorage implements IFileStorage {
+export class CloudinaryStorageAdapter implements IFileStorage {
   async upload(bufferOrPath: Buffer | string) {
     const res = await cloudinary.uploader.upload(bufferOrPath, { folder: 'app' })
     return { url: res.secure_url, publicId: res.public_id }

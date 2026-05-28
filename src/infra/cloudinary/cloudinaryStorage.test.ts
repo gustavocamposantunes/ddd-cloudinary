@@ -12,7 +12,7 @@ vi.mock('./cloudinaryClient.js', () => ({
   },
 }))
 
-describe('CloudinaryStorage', () => {
+describe('CloudinaryStorageAdapter', () => {
   beforeEach(() => {
     uploadMock.mockReset()
     destroyMock.mockReset()
@@ -27,8 +27,8 @@ describe('CloudinaryStorage', () => {
       resource_type: 'image',
     })
 
-    const { CloudinaryStorage } = await import('./cloudinaryStorage.js')
-    const storage = new CloudinaryStorage({ folder: 'avatars' })
+    const { CloudinaryStorageAdapter } = await import('./cloudinaryStorageAdapter.js')
+    const storage = new CloudinaryStorageAdapter({ folder: 'avatars' })
 
     const result = await storage.upload({
       buffer: Buffer.from('fake-image-bytes'),
@@ -59,8 +59,8 @@ describe('CloudinaryStorage', () => {
     })
     destroyMock.mockResolvedValue({ result: 'ok' })
 
-    const { CloudinaryStorage } = await import('./cloudinaryStorage.js')
-    const storage = new CloudinaryStorage({ resourceType: 'raw' })
+    const { CloudinaryStorageAdapter } = await import('./cloudinaryStorageAdapter.js')
+    const storage = new CloudinaryStorageAdapter({ resourceType: 'raw' })
 
     await storage.upload({ path: '/tmp/report.pdf' }, 'documents')
     await storage.delete('documents/report-1')

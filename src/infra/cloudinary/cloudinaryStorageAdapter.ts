@@ -9,16 +9,16 @@ type CloudinaryUploadResult = {
   resource_type: string
 }
 
-type CloudinaryStorageOptions = {
+type CloudinaryStorageAdapterOptions = {
   folder?: string
   resourceType?: 'image' | 'video' | 'raw'
 }
 
-export class CloudinaryStorage implements IFileStorage {
+export class CloudinaryStorageAdapter implements IFileStorage {
   private readonly folder?: string
   private readonly resourceType: 'image' | 'video' | 'raw'
 
-  constructor(options: CloudinaryStorageOptions = {}) {
+  constructor(options: CloudinaryStorageAdapterOptions = {}) {
     this.folder = options.folder
     this.resourceType = options.resourceType ?? 'image'
   }
