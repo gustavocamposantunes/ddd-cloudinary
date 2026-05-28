@@ -1,4 +1,4 @@
-# DDD - Integração com Cloudinary
+# Domain Driven Design - Integração com Cloudinary
 
 ![DDD Logo](assets/ddd.png)
 
@@ -11,6 +11,7 @@ Este é um projeto para exemplificar a aplicação do DDD (Domain-Driven Design)
 - Cloudinary
 - TypeScript
 - Vitest (para testes)
+- EJS (para renderização de páginas)
 
 # Estrutura do Projeto
 
