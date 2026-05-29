@@ -7,7 +7,7 @@ describe('createApp', () => {
     vi.restoreAllMocks()
   })
 
-  it('renders the upload page and processes a valid upload submission', async () => {
+  it('renders the upload page, uploads an image, and allows selecting from the gallery', async () => {
     const uploadFileUseCase = {
       execute: vi.fn().mockResolvedValue({
         publicId: 'avatars/user-1',
@@ -17,8 +17,19 @@ describe('createApp', () => {
         resourceType: 'image',
       }),
     }
+    const listGalleryImagesUseCase = {
+      execute: vi.fn().mockResolvedValue([
+        {
+          publicId: 'uploads/avatar-1',
+          secureUrl: 'https://res.cloudinary.com/demo/image/upload/v1/uploads/avatar-1.jpg',
+          bytes: 300,
+          format: 'jpg',
+          resourceType: 'image',
+        },
+      ]),
+    }
 
-    const app = createApp({ uploadFileUseCase })
+    const app = createApp({ uploadFileUseCase, listGalleryImagesUseCase })
     const server = app.listen(0)
     const address = server.address() as AddressInfo
 
@@ -29,27 +40,24 @@ describe('createApp', () => {
       const getHtml = await getResponse.text()
 
       expect(getResponse.status).toBe(200)
-      expect(getHtml).toContain('Cloudinary upload')
-      expect(getHtml).toContain('Submit a file path')
+      expect(getHtml).toContain('Upload image')
+      expect(getHtml).toContain('Image file')
+
+      const formData = new FormData()
+      formData.append('image', new Blob([Buffer.from('fake-image-bytes')], { type: 'image/jpeg' }), 'avatar.jpg')
+      formData.append('folder', 'avatars')
 
       const postResponse = await fetch(`${baseUrl}/upload`, {
         method: 'POST',
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          path: '/tmp/avatar.jpg',
-          folder: 'avatars',
-          mimeType: 'image/jpeg',
-          originalName: 'avatar.jpg',
-        }).toString(),
+        body: formData,
       })
       const postHtml = await postResponse.text()
 
       expect(postResponse.status).toBe(200)
       expect(uploadFileUseCase.execute).toHaveBeenCalledWith({
         file: {
-          path: '/tmp/avatar.jpg',
+          buffer: expect.any(Buffer),
+          mimeType: 'image/jpeg',
           originalName: 'avatar.jpg',
         },
         folder: 'avatars',
@@ -57,6 +65,26 @@ describe('createApp', () => {
       expect(postHtml).toContain('Upload completed.')
       expect(postHtml).toContain('avatars/user-1')
       expect(postHtml).toContain('https://res.cloudinary.com/demo/image/upload/v1/avatars/user-1.jpg')
+
+      const galleryResponse = await fetch(`${baseUrl}/gallery`)
+      const galleryHtml = await galleryResponse.text()
+
+      expect(galleryResponse.status).toBe(200)
+      expect(galleryHtml).toContain('Image gallery')
+      expect(galleryHtml).toContain('Choose image')
+
+      const selectResponse = await fetch(`${baseUrl}/gallery/select`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ publicId: 'uploads/avatar-1' }).toString(),
+      })
+      const selectHtml = await selectResponse.text()
+
+      expect(selectResponse.status).toBe(200)
+      expect(selectHtml).toContain('Selected image')
+      expect(selectHtml).toContain('uploads/avatar-1')
     } finally {
       server.close()
     }

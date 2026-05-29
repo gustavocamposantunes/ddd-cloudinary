@@ -9,6 +9,10 @@ type CloudinaryUploadResult = {
   resource_type: string
 }
 
+type CloudinaryResourcesResult = {
+  resources: CloudinaryUploadResult[]
+}
+
 type CloudinaryStorageAdapterOptions = {
   folder?: string
   resourceType?: 'image' | 'video' | 'raw'
@@ -48,6 +52,27 @@ export class CloudinaryStorageAdapter implements IFileStorage {
     await cloudinary.uploader.destroy(publicId, {
       resource_type: this.resourceType,
     })
+  }
+
+  async list(folder?: string): Promise<FileUploadResult[]> {
+    ensureCloudinaryConfigured()
+
+    const result = await cloudinary.api.resources({
+      resource_type: this.resourceType,
+      type: 'upload',
+      ...(folder ? { prefix: folder } : {}),
+      max_results: 100,
+    })
+
+    const resources = result as CloudinaryResourcesResult
+
+    return resources.resources.map((resource) => ({
+      publicId: resource.public_id,
+      secureUrl: resource.secure_url,
+      bytes: resource.bytes,
+      format: resource.format,
+      resourceType: resource.resource_type,
+    }))
   }
 
   private toUploadPayload(file: FileUploadInput): string {

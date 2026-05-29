@@ -16,6 +16,10 @@ class FileStorageSpy implements IFileStorage {
   async delete(publicId: string): Promise<void> {
     this.deleteCalls.push(publicId)
   }
+
+  async list(): Promise<FileUploadResult[]> {
+    return []
+  }
 }
 
 describe('UploadFileUseCase', () => {

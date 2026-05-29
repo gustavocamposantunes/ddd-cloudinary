@@ -20,12 +20,12 @@ describe('UploadFileController', () => {
 
     expect(response.status).toHaveBeenCalledWith(200)
     expect(response.render).toHaveBeenCalledWith('pages/upload-page', {
-      title: 'Cloudinary upload',
+      title: 'Upload image',
       formValues: {},
     })
   })
 
-  it('renders an error when the path is missing', async () => {
+  it('renders an error when the image file is missing', async () => {
     const uploadFileUseCase = {
       execute: vi.fn(),
     }
@@ -36,12 +36,10 @@ describe('UploadFileController', () => {
 
     expect(uploadFileUseCase.execute).not.toHaveBeenCalled()
     expect(response.render).toHaveBeenCalledWith('pages/upload-page', {
-      title: 'Cloudinary upload',
-      errorMessage: 'Provide a file path to upload.',
+      title: 'Upload image',
+      errorMessage: 'Provide an image file to upload.',
       formValues: {
         folder: 'avatars',
-        mimeType: undefined,
-        originalName: undefined,
       },
     })
   })
@@ -62,11 +60,13 @@ describe('UploadFileController', () => {
 
     await controller.handleUpload(
       {
+        file: {
+          buffer: Buffer.from('fake-image-bytes'),
+          mimetype: 'image/jpeg',
+          originalname: 'avatar.jpg',
+        },
         body: {
-          path: '/tmp/avatar.jpg',
           folder: 'avatars',
-          mimeType: 'image/jpeg',
-          originalName: 'avatar.jpg',
         },
       } as never,
       response as never,
@@ -74,19 +74,17 @@ describe('UploadFileController', () => {
 
     expect(uploadFileUseCase.execute).toHaveBeenCalledWith({
       file: {
-        path: '/tmp/avatar.jpg',
+        buffer: Buffer.from('fake-image-bytes'),
+        mimeType: 'image/jpeg',
         originalName: 'avatar.jpg',
       },
       folder: 'avatars',
     })
     expect(response.render).toHaveBeenCalledWith('pages/upload-page', {
-      title: 'Cloudinary upload',
+      title: 'Upload image',
       uploadResult,
       formValues: {
-        path: '/tmp/avatar.jpg',
         folder: 'avatars',
-        mimeType: 'image/jpeg',
-        originalName: 'avatar.jpg',
       },
     })
   })

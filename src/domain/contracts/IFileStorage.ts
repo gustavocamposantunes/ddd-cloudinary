@@ -20,4 +20,5 @@ export interface FileUploadResult {
 export interface IFileStorage {
   upload(file: FileUploadInput, folder?: string): Promise<FileUploadResult>
   delete(publicId: string): Promise<void>
+  list(folder?: string): Promise<FileUploadResult[]>
 }

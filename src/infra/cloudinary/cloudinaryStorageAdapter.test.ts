@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const uploadMock = vi.fn()
 const destroyMock = vi.fn()
+const resourcesMock = vi.fn()
 const ensureCloudinaryConfiguredMock = vi.fn()
 
 vi.mock('./cloudinaryClient', () => ({
@@ -9,6 +10,9 @@ vi.mock('./cloudinaryClient', () => ({
     uploader: {
       upload: uploadMock,
       destroy: destroyMock,
+    },
+    api: {
+      resources: resourcesMock,
     },
   },
   ensureCloudinaryConfigured: ensureCloudinaryConfiguredMock,
@@ -18,6 +22,7 @@ describe('CloudinaryStorageAdapter', () => {
   beforeEach(() => {
     uploadMock.mockReset()
     destroyMock.mockReset()
+    resourcesMock.mockReset()
     ensureCloudinaryConfiguredMock.mockReset()
   })
 
@@ -77,5 +82,41 @@ describe('CloudinaryStorageAdapter', () => {
     expect(destroyMock).toHaveBeenCalledWith('documents/report-1', {
       resource_type: 'raw',
     })
+  })
+
+  it('lists image resources from the configured folder', async () => {
+    resourcesMock.mockResolvedValue({
+      resources: [
+        {
+          public_id: 'uploads/avatar-1',
+          secure_url: 'https://res.cloudinary.com/demo/image/upload/v1/uploads/avatar-1.jpg',
+          bytes: 300,
+          format: 'jpg',
+          resource_type: 'image',
+        },
+      ],
+    })
+
+    const { CloudinaryStorageAdapter } = await import('./cloudinaryStorageAdapter')
+    const storage = new CloudinaryStorageAdapter({ folder: 'uploads' })
+
+    const result = await storage.list('uploads')
+
+    expect(resourcesMock).toHaveBeenCalledWith({
+      resource_type: 'image',
+      type: 'upload',
+      prefix: 'uploads',
+      max_results: 100,
+    })
+    expect(ensureCloudinaryConfiguredMock).toHaveBeenCalledOnce()
+    expect(result).toEqual([
+      {
+        publicId: 'uploads/avatar-1',
+        secureUrl: 'https://res.cloudinary.com/demo/image/upload/v1/uploads/avatar-1.jpg',
+        bytes: 300,
+        format: 'jpg',
+        resourceType: 'image',
+      },
+    ])
   })
 })

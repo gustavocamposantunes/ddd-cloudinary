@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %></title>
     <style>
-      body { font-family: Arial, sans-serif; margin: 0; background: #f4f7fb; color: #102033; }
-      main { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
-      .card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(16, 32, 51, 0.08); }
+      body { font-family: Arial, sans-serif; margin: 0; background: linear-gradient(180deg, #f4f7fb 0%, #eef3ff 100%); color: #102033; }
+      main { max-width: 1040px; margin: 0 auto; padding: 40px 20px; }
+      .shell { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; }
+      .card { background: #fff; border-radius: 18px; padding: 24px; box-shadow: 0 10px 30px rgba(16, 32, 51, 0.08); }
+      .hero { background: linear-gradient(135deg, #0f62fe 0%, #143d7a 100%); color: #fff; }
+      .hero a { color: #fff; }
       label { display: block; margin-top: 16px; font-weight: 700; }
-      input { width: 100%; padding: 12px 14px; margin-top: 6px; border: 1px solid #c8d4e3; border-radius: 10px; }
-      button { margin-top: 20px; padding: 12px 18px; border: 0; border-radius: 10px; background: #0f62fe; color: #fff; font-weight: 700; cursor: pointer; }
+      input { width: 100%; padding: 12px 14px; margin-top: 6px; border: 1px solid #c8d4e3; border-radius: 10px; box-sizing: border-box; }
+      input[type="file"] { padding: 10px; background: #fff; }
+      button, .link-button { margin-top: 20px; padding: 12px 18px; border: 0; border-radius: 10px; background: #0f62fe; color: #fff; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; }
       .alert { margin-top: 20px; padding: 14px 16px; border-radius: 10px; }
       .alert.error { background: #fff1f0; color: #a61b1b; }
       .alert.success { background: #eef8f3; color: #116b3a; }
@@ -18,52 +22,60 @@
       dt { font-weight: 700; }
       dd { margin: 0; word-break: break-word; }
       .hint { color: #5c6f82; margin-top: 8px; }
+      .muted { color: rgba(255, 255, 255, 0.78); }
+      .stack { display: grid; gap: 12px; }
+      .summary { display: grid; gap: 8px; }
+      .summary strong { font-size: 1.1rem; }
+      .nav { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+      .nav a { text-decoration: none; }
+      @media (max-width: 900px) {
+        .shell { grid-template-columns: 1fr; }
+      }
     </style>
   </head>
   <body>
     <main>
-      <section class="card">
-        <h1><%= title %></h1>
-        <p class="hint">Submit a file path and folder to route it through the Data layer and into Cloudinary.</p>
-
-        <form method="post" action="/upload">
-          <label for="path">File path</label>
-          <input id="path" name="path" value="<%= formValues?.path || '' %>" placeholder="/tmp/avatar.jpg" required />
-
-          <label for="folder">Folder</label>
-          <input id="folder" name="folder" value="<%= formValues?.folder || '' %>" placeholder="avatars" />
-
-          <label for="mimeType">Mime type</label>
-          <input id="mimeType" name="mimeType" value="<%= formValues?.mimeType || '' %>" placeholder="image/jpeg" />
-
-          <label for="originalName">Original name</label>
-          <input id="originalName" name="originalName" value="<%= formValues?.originalName || '' %>" placeholder="avatar.jpg" />
-
-          <button type="submit">Upload to Cloudinary</button>
-        </form>
-
-        <% if (errorMessage) { %>
-          <div class="alert error"><%= errorMessage %></div>
-        <% } %>
-
-        <% if (uploadResult) { %>
-          <div class="alert success">
-            <strong>Upload completed.</strong>
-            <dl>
-              <dt>Public ID</dt>
-              <dd><%= uploadResult.publicId %></dd>
-              <dt>Secure URL</dt>
-              <dd><a href="<%= uploadResult.secureUrl %>"><%= uploadResult.secureUrl %></a></dd>
-              <dt>Bytes</dt>
-              <dd><%= uploadResult.bytes %></dd>
-              <dt>Format</dt>
-              <dd><%= uploadResult.format || '-' %></dd>
-              <dt>Resource type</dt>
-              <dd><%= uploadResult.resourceType %></dd>
-            </dl>
+      <div class="shell">
+        <section class="card hero">
+          <div class="stack">
+            <span class="muted">Cloudinary upload</span>
+            <h1><%= title %></h1>
+            <p class="hint" style="color: rgba(255,255,255,0.82);">Upload an image file and then review the gallery to choose a stored image.</p>
+            <div class="nav">
+              <a class="link-button" href="/gallery">Open gallery</a>
+              <a class="link-button" href="/upload" style="background: rgba(255,255,255,0.18);">Refresh form</a>
+            </div>
           </div>
-        <% } %>
-      </section>
+        </section>
+
+        <section class="card">
+          <form method="post" action="/upload" enctype="multipart/form-data">
+            <label for="image">Image file</label>
+            <input id="image" name="image" type="file" accept="image/*" required />
+
+            <label for="folder">Folder</label>
+            <input id="folder" name="folder" value="<%= formValues?.folder || 'uploads' %>" placeholder="uploads" />
+
+            <button type="submit">Upload image</button>
+          </form>
+
+          <% if (errorMessage) { %>
+            <div class="alert error"><%= errorMessage %></div>
+          <% } %>
+
+          <% if (uploadResult) { %>
+            <div class="alert success">
+              <strong>Upload completed.</strong>
+              <div class="summary">
+                <span><strong>Public ID:</strong> <%= uploadResult.publicId %></span>
+                <span><strong>URL:</strong> <a href="<%= uploadResult.secureUrl %>"><%= uploadResult.secureUrl %></a></span>
+                <span><strong>Bytes:</strong> <%= uploadResult.bytes %></span>
+                <span><strong>Format:</strong> <%= uploadResult.format || '-' %></span>
+              </div>
+            </div>
+          <% } %>
+        </section>
+      </div>
     </main>
   </body>
 </html>

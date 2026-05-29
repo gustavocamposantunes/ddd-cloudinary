@@ -23,23 +23,21 @@ export class UploadFileController {
 
   async showForm(_request: Request, response: Response): Promise<void> {
     await this.renderPage(response, {
-      title: 'Cloudinary upload',
+      title: 'Upload image',
       formValues: {},
     })
   }
 
   async handleUpload(request: Request, response: Response): Promise<void> {
+    const uploadedFile = request.file as Express.Multer.File | undefined
     const body = request.body as Record<string, string | undefined>
-    const path = body.path?.trim()
 
-    if (!path) {
+    if (!uploadedFile) {
       await this.renderPage(response, {
-        title: 'Cloudinary upload',
-        errorMessage: 'Provide a file path to upload.',
+        title: 'Upload image',
+        errorMessage: 'Provide an image file to upload.',
         formValues: {
           folder: body.folder,
-          mimeType: body.mimeType,
-          originalName: body.originalName,
         },
       })
       return
@@ -47,8 +45,9 @@ export class UploadFileController {
 
     const input: UploadFileUseCaseInput = {
       file: {
-        path,
-        originalName: body.originalName,
+        buffer: uploadedFile.buffer,
+        mimeType: uploadedFile.mimetype,
+        originalName: uploadedFile.originalname,
       },
       folder: body.folder?.trim() || undefined,
     }
@@ -56,13 +55,10 @@ export class UploadFileController {
     const uploadResult = await this.dependencies.uploadFileUseCase.execute(input)
 
     await this.renderPage(response, {
-      title: 'Cloudinary upload',
+      title: 'Upload image',
       uploadResult,
       formValues: {
-        path: body.path,
         folder: body.folder,
-        mimeType: body.mimeType,
-        originalName: body.originalName,
       },
     })
   }
