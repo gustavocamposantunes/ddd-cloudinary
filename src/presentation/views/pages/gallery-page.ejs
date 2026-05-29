@@ -16,11 +16,18 @@
       .alert.error { background: #fff1f0; color: #a61b1b; }
       .selected { margin-bottom: 24px; display: grid; grid-template-columns: 280px 1fr; gap: 16px; align-items: center; }
       .selected img, .thumb { width: 100%; border-radius: 14px; object-fit: cover; }
-      .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
-      .image-card { border: 1px solid #dde6f4; border-radius: 16px; overflow: hidden; background: #fff; display: grid; }
+      .gallery-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin: 24px 0 16px; }
+      .gallery-header h2 { margin: 0; }
+      .count-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; background: #eef3ff; color: #143d7a; font-weight: 700; font-size: 0.92rem; }
+      .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+      .image-card { border: 1px solid #dde6f4; border-radius: 18px; overflow: hidden; background: #fff; display: grid; box-shadow: 0 8px 20px rgba(16, 32, 51, 0.04); transition: transform 0.15s ease, box-shadow 0.15s ease; }
+      .image-card:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(16, 32, 51, 0.08); }
       .image-card img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
-      .image-card .body { padding: 16px; display: grid; gap: 10px; }
+      .image-card .body { padding: 16px; display: grid; gap: 12px; }
       .image-card .meta { display: grid; gap: 4px; color: #5c6f82; font-size: 0.94rem; }
+      .image-card .title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+      .image-card .badge { padding: 4px 8px; border-radius: 999px; background: #eef8f3; color: #116b3a; font-size: 0.78rem; font-weight: 700; }
+      .image-card .badge.selected { background: #eef3ff; color: #143d7a; }
       .image-card form { margin: 0; }
       .image-card button { width: 100%; }
       .is-selected { border-color: #0f62fe; box-shadow: 0 0 0 2px rgba(15, 98, 254, 0.12); }
@@ -64,13 +71,20 @@
       <% if (!images.length) { %>
         <section class="empty">No images found in the gallery yet. Upload one first.</section>
       <% } else { %>
+        <div class="gallery-header">
+          <h2>Stored images</h2>
+          <span class="count-pill"><%= images.length %> cards</span>
+        </div>
         <section class="gallery">
           <% images.forEach((image) => { %>
             <article class="image-card <%= selectedImage && selectedImage.publicId === image.publicId ? 'is-selected' : '' %>">
               <img src="<%= image.secureUrl %>" alt="<%= image.publicId %>" />
               <div class="body">
                 <div class="meta">
-                  <strong><%= image.publicId %></strong>
+                  <div class="title-row">
+                    <strong><%= image.publicId %></strong>
+                    <span class="badge <%= selectedImage && selectedImage.publicId === image.publicId ? 'selected' : '' %>"><%= selectedImage && selectedImage.publicId === image.publicId ? 'Selected' : 'Image' %></span>
+                  </div>
                   <span><%= image.format || '-' %> • <%= image.bytes %> bytes</span>
                 </div>
                 <form method="post" action="/gallery/select">
