@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 import { createApp } from './app'
 import { UploadFileUseCase } from '../data/usecases/upload-file/upload-file-usecase'
 import { ListGalleryImagesUseCase } from '../data/usecases/list-gallery-images/list-gallery-images-usecase'
