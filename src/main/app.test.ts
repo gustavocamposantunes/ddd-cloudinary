@@ -40,8 +40,8 @@ describe('createApp', () => {
       const getHtml = await getResponse.text()
 
       expect(getResponse.status).toBe(200)
-      expect(getHtml).toContain('Upload image')
-      expect(getHtml).toContain('Image file')
+      expect(getHtml).toContain('Enviar imagem')
+      expect(getHtml).toContain('Arquivo de imagem')
 
       const formData = new FormData()
       formData.append('image', new Blob([Buffer.from('fake-image-bytes')], { type: 'image/jpeg' }), 'avatar.jpg')
@@ -62,7 +62,7 @@ describe('createApp', () => {
         },
         folder: 'avatars',
       })
-      expect(postHtml).toContain('Upload completed.')
+      expect(postHtml).toContain('Envio concluído.')
       expect(postHtml).toContain('avatars/user-1')
       expect(postHtml).toContain('https://res.cloudinary.com/demo/image/upload/v1/avatars/user-1.jpg')
 
@@ -70,8 +70,8 @@ describe('createApp', () => {
       const galleryHtml = await galleryResponse.text()
 
       expect(galleryResponse.status).toBe(200)
-      expect(galleryHtml).toContain('Image gallery')
-      expect(galleryHtml).toContain('Choose image')
+      expect(galleryHtml).toContain('Galeria de imagens')
+      expect(galleryHtml).toContain('Escolher imagem')
 
       const selectResponse = await fetch(`${baseUrl}/gallery/select`, {
         method: 'POST',
@@ -83,7 +83,7 @@ describe('createApp', () => {
       const selectHtml = await selectResponse.text()
 
       expect(selectResponse.status).toBe(200)
-      expect(selectHtml).toContain('Selected image')
+      expect(selectHtml).toContain('Imagem selecionada')
       expect(selectHtml).toContain('uploads/avatar-1')
     } finally {
       server.close()

@@ -21,14 +21,14 @@ export class GalleryController {
       const images = await this.dependencies.listGalleryImagesUseCase.execute({ folder: 'uploads' })
 
       await this.renderGallery(response, {
-        title: 'Image gallery',
+        title: 'Galeria de imagens',
         images,
       })
     } catch {
       await this.renderGallery(response, {
-        title: 'Image gallery',
+        title: 'Galeria de imagens',
         images: [],
-        errorMessage: 'Configure Cloudinary credentials to load the gallery.',
+        errorMessage: 'Configure as credenciais do Cloudinary para carregar a galeria.',
       })
     }
   }
@@ -43,16 +43,16 @@ export class GalleryController {
         : undefined
 
       await this.renderGallery(response, {
-        title: 'Image gallery',
+        title: 'Galeria de imagens',
         images,
         selectedImage,
-        errorMessage: selectedPublicId && !selectedImage ? 'Choose an image from the gallery.' : undefined,
+        errorMessage: selectedPublicId && !selectedImage ? 'Escolha uma imagem da galeria.' : undefined,
       })
     } catch {
       await this.renderGallery(response, {
-        title: 'Image gallery',
+        title: 'Galeria de imagens',
         images: [],
-        errorMessage: 'Configure Cloudinary credentials to load the gallery.',
+        errorMessage: 'Configure as credenciais do Cloudinary para carregar a galeria.',
       })
     }
   }

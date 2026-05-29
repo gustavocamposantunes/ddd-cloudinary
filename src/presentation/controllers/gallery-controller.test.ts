@@ -28,7 +28,7 @@ describe('GalleryController', () => {
 
     expect(listGalleryImagesUseCase.execute).toHaveBeenCalledWith({ folder: 'uploads' })
     expect(response.render).toHaveBeenCalledWith('pages/gallery-page', {
-      title: 'Image gallery',
+      title: 'Galeria de imagens',
       images: [
         {
           publicId: 'uploads/avatar-1',
@@ -61,7 +61,7 @@ describe('GalleryController', () => {
     await controller.chooseImage({ body: { publicId: 'uploads/avatar-1' } } as never, response as never)
 
     expect(response.render).toHaveBeenCalledWith('pages/gallery-page', {
-      title: 'Image gallery',
+      title: 'Galeria de imagens',
       images: [
         {
           publicId: 'uploads/avatar-1',
@@ -92,10 +92,10 @@ describe('GalleryController', () => {
     await controller.showGallery({} as never, response as never)
 
     expect(response.render).toHaveBeenCalledWith('pages/gallery-page', {
-      title: 'Image gallery',
+      title: 'Galeria de imagens',
       images: [],
       selectedImage: undefined,
-      errorMessage: 'Configure Cloudinary credentials to load the gallery.',
+      errorMessage: 'Configure as credenciais do Cloudinary para carregar a galeria.',
     })
   })
 })

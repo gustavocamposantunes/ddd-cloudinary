@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -42,12 +42,12 @@
     <main>
       <section class="card hero">
         <div>
-          <span class="muted">Cloudinary gallery</span>
+          <span class="muted">Galeria do Cloudinary</span>
           <h1><%= title %></h1>
-          <p class="muted">Choose an image from the stored library. The selected image is highlighted below.</p>
+          <p class="muted">Escolha uma imagem da biblioteca armazenada. A imagem selecionada aparece destacada abaixo.</p>
         </div>
         <div class="nav">
-          <a href="/upload">Back to upload</a>
+          <a href="/upload">Voltar ao envio</a>
         </div>
       </section>
 
@@ -59,20 +59,20 @@
         <section class="card selected">
           <img src="<%= selectedImage.secureUrl %>" alt="<%= selectedImage.publicId %>" />
           <div>
-            <h2>Selected image</h2>
-            <p><strong>Public ID:</strong> <%= selectedImage.publicId %></p>
+            <h2>Imagem selecionada</h2>
+            <p><strong>ID público:</strong> <%= selectedImage.publicId %></p>
             <p><strong>URL:</strong> <a href="<%= selectedImage.secureUrl %>"><%= selectedImage.secureUrl %></a></p>
-            <p><strong>Format:</strong> <%= selectedImage.format || '-' %></p>
+            <p><strong>Formato:</strong> <%= selectedImage.format || '-' %></p>
             <p><strong>Bytes:</strong> <%= selectedImage.bytes %></p>
           </div>
         </section>
       <% } %>
 
       <% if (!images.length) { %>
-        <section class="empty">No images found in the gallery yet. Upload one first.</section>
+        <section class="empty">Nenhuma imagem encontrada na galeria ainda. Envie uma imagem primeiro.</section>
       <% } else { %>
         <div class="gallery-header">
-          <h2>Stored images</h2>
+          <h2>Imagens armazenadas</h2>
           <span class="count-pill"><%= images.length %> cards</span>
         </div>
         <section class="gallery">
@@ -83,13 +83,13 @@
                 <div class="meta">
                   <div class="title-row">
                     <strong><%= image.publicId %></strong>
-                    <span class="badge <%= selectedImage && selectedImage.publicId === image.publicId ? 'selected' : '' %>"><%= selectedImage && selectedImage.publicId === image.publicId ? 'Selected' : 'Image' %></span>
+                    <span class="badge <%= selectedImage && selectedImage.publicId === image.publicId ? 'selected' : '' %>"><%= selectedImage && selectedImage.publicId === image.publicId ? 'Selecionada' : 'Imagem' %></span>
                   </div>
                   <span><%= image.format || '-' %> • <%= image.bytes %> bytes</span>
                 </div>
                 <form method="post" action="/gallery/select">
                   <input type="hidden" name="publicId" value="<%= image.publicId %>" />
-                  <button type="submit"><%= selectedImage && selectedImage.publicId === image.publicId ? 'Chosen image' : 'Choose image' %></button>
+                  <button type="submit"><%= selectedImage && selectedImage.publicId === image.publicId ? 'Imagem escolhida' : 'Escolher imagem' %></button>
                 </form>
               </div>
             </article>

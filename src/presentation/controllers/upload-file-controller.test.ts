@@ -20,7 +20,7 @@ describe('UploadFileController', () => {
 
     expect(response.status).toHaveBeenCalledWith(200)
     expect(response.render).toHaveBeenCalledWith('pages/upload-page', {
-      title: 'Upload image',
+      title: 'Enviar imagem',
       formValues: {},
     })
   })
@@ -36,8 +36,8 @@ describe('UploadFileController', () => {
 
     expect(uploadFileUseCase.execute).not.toHaveBeenCalled()
     expect(response.render).toHaveBeenCalledWith('pages/upload-page', {
-      title: 'Upload image',
-      errorMessage: 'Provide an image file to upload.',
+      title: 'Enviar imagem',
+      errorMessage: 'Envie um arquivo de imagem para continuar.',
       formValues: {
         folder: 'avatars',
       },
@@ -81,7 +81,7 @@ describe('UploadFileController', () => {
       folder: 'avatars',
     })
     expect(response.render).toHaveBeenCalledWith('pages/upload-page', {
-      title: 'Upload image',
+      title: 'Enviar imagem',
       uploadResult,
       formValues: {
         folder: 'avatars',

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -38,25 +38,25 @@
       <div class="shell">
         <section class="card hero">
           <div class="stack">
-            <span class="muted">Cloudinary upload</span>
+            <span class="muted">Envio para o Cloudinary</span>
             <h1><%= title %></h1>
-            <p class="hint" style="color: rgba(255,255,255,0.82);">Upload an image file and then review the gallery to choose a stored image.</p>
+            <p class="hint" style="color: rgba(255,255,255,0.82);">Envie uma imagem e depois acesse a galeria para escolher uma imagem armazenada.</p>
             <div class="nav">
-              <a class="link-button" href="/gallery">Open gallery</a>
-              <a class="link-button" href="/upload" style="background: rgba(255,255,255,0.18);">Refresh form</a>
+              <a class="link-button" href="/gallery">Abrir galeria</a>
+              <a class="link-button" href="/upload" style="background: rgba(255,255,255,0.18);">Atualizar formulário</a>
             </div>
           </div>
         </section>
 
         <section class="card">
           <form method="post" action="/upload" enctype="multipart/form-data">
-            <label for="image">Image file</label>
+            <label for="image">Arquivo de imagem</label>
             <input id="image" name="image" type="file" accept="image/*" required />
 
-            <label for="folder">Folder</label>
+            <label for="folder">Pasta</label>
             <input id="folder" name="folder" value="<%= formValues?.folder || 'uploads' %>" placeholder="uploads" />
 
-            <button type="submit">Upload image</button>
+            <button type="submit">Enviar imagem</button>
           </form>
 
           <% if (errorMessage) { %>
@@ -65,12 +65,12 @@
 
           <% if (uploadResult) { %>
             <div class="alert success">
-              <strong>Upload completed.</strong>
+              <strong>Envio concluído.</strong>
               <div class="summary">
-                <span><strong>Public ID:</strong> <%= uploadResult.publicId %></span>
+                <span><strong>ID público:</strong> <%= uploadResult.publicId %></span>
                 <span><strong>URL:</strong> <a href="<%= uploadResult.secureUrl %>"><%= uploadResult.secureUrl %></a></span>
                 <span><strong>Bytes:</strong> <%= uploadResult.bytes %></span>
-                <span><strong>Format:</strong> <%= uploadResult.format || '-' %></span>
+                <span><strong>Formato:</strong> <%= uploadResult.format || '-' %></span>
               </div>
             </div>
           <% } %>
