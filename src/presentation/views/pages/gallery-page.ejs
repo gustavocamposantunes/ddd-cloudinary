@@ -14,6 +14,7 @@
       .nav a.secondary { background: #e8eef8; color: #102033; }
       .alert { margin-top: 20px; padding: 14px 16px; border-radius: 10px; }
       .alert.error { background: #fff1f0; color: #a61b1b; }
+      .alert.success { background: #eef8f3; color: #116b3a; }
       .selected { margin-bottom: 24px; display: grid; grid-template-columns: 280px 1fr; gap: 16px; align-items: center; }
       .selected img, .thumb { width: 100%; border-radius: 14px; object-fit: cover; }
       .gallery-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin: 24px 0 16px; }
@@ -29,7 +30,14 @@
       .image-card .badge { padding: 4px 8px; border-radius: 999px; background: #eef8f3; color: #116b3a; font-size: 0.78rem; font-weight: 700; }
       .image-card .badge.selected { background: #eef3ff; color: #143d7a; }
       .image-card form { margin: 0; }
-      .image-card button { width: 100%; }
+      .image-card .actions { display: flex; align-items: stretch; gap: 12px; }
+      .image-card .actions form:first-child { flex: 1 1 auto; }
+      .image-card .actions form:last-child { flex: 0 0 auto; margin-left: auto; }
+      .image-card .actions button { width: 100%; min-height: 48px; }
+      .image-card .actions form:first-child button { padding: 14px 20px; font-size: 0.98rem; }
+      .image-card .delete-button { width: auto; min-width: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #fff1f0; color: #a61b1b; border: 1px solid #ffc9c5; padding: 0 16px; }
+      .image-card .delete-button:hover { background: #ffe7e5; }
+      .image-card .delete-button svg { width: 16px; height: 16px; fill: currentColor; }
       .is-selected { border-color: #0f62fe; box-shadow: 0 0 0 2px rgba(15, 98, 254, 0.12); }
       .empty { padding: 24px; background: #f6f9fe; border-radius: 14px; color: #5c6f82; }
       .muted { color: #5c6f82; }
@@ -53,6 +61,10 @@
 
       <% if (errorMessage) { %>
         <div class="alert error"><%= errorMessage %></div>
+      <% } %>
+
+      <% if (successMessage) { %>
+        <div class="alert success"><%= successMessage %></div>
       <% } %>
 
       <% if (selectedImage) { %>
@@ -87,10 +99,20 @@
                   </div>
                   <span><%= image.format || '-' %> • <%= image.bytes %> bytes</span>
                 </div>
-                <form method="post" action="/gallery/select">
-                  <input type="hidden" name="publicId" value="<%= image.publicId %>" />
-                  <button type="submit"><%= selectedImage && selectedImage.publicId === image.publicId ? 'Imagem escolhida' : 'Escolher imagem' %></button>
-                </form>
+                <div class="actions">
+                  <form method="post" action="/gallery/select">
+                    <input type="hidden" name="publicId" value="<%= image.publicId %>" />
+                    <button type="submit"><%= selectedImage && selectedImage.publicId === image.publicId ? 'Imagem escolhida' : 'Escolher imagem' %></button>
+                  </form>
+                  <form method="post" action="/gallery/delete">
+                    <input type="hidden" name="publicId" value="<%= image.publicId %>" />
+                    <button class="delete-button" type="submit" aria-label="Excluir imagem <%= image.publicId %>" title="Excluir imagem">
+                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M9 3.75A1.75 1.75 0 0 1 10.75 2h2.5A1.75 1.75 0 0 1 15 3.75V4h3.25a.75.75 0 0 1 0 1.5h-1.04l-.74 13.27A2.25 2.25 0 0 1 14.22 21H9.78a2.25 2.25 0 0 1-2.25-2.23L6.8 5.5H5.75a.75.75 0 0 1 0-1.5H9v-.25ZM10.75 3.5a.25.25 0 0 0-.25.25V4h3v-.25a.25.25 0 0 0-.25-.25h-2.5ZM8.3 5.5l.72 13.2a.75.75 0 0 0 .75.73h4.46a.75.75 0 0 0 .75-.73L15.7 5.5H8.3Zm2.2 2.5c.41 0 .75.34.75.75v6.5a.75.75 0 0 1-1.5 0v-6.5c0-.41.34-.75.75-.75Zm3 0c.41 0 .75.34.75.75v6.5a.75.75 0 0 1-1.5 0v-6.5c0-.41.34-.75.75-.75Z" />
+                      </svg>
+                    </button>
+                  </form>
+                </div>
               </div>
             </article>
           <% }) %>
