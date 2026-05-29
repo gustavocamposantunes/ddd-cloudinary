@@ -6,6 +6,7 @@ export function createGalleryRoutes(controller: GalleryController): Router {
 
   router.get('/gallery', controller.showGallery.bind(controller))
   router.post('/gallery/select', controller.chooseImage.bind(controller))
+  router.post('/gallery/delete', controller.deleteImage.bind(controller))
 
   return router
 }

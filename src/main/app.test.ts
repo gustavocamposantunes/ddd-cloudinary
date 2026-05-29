@@ -28,8 +28,11 @@ describe('createApp', () => {
         },
       ]),
     }
+    const deleteGalleryImageUseCase = {
+      execute: vi.fn().mockResolvedValue(undefined),
+    }
 
-    const app = createApp({ uploadFileUseCase, listGalleryImagesUseCase })
+    const app = createApp({ uploadFileUseCase, listGalleryImagesUseCase, deleteGalleryImageUseCase })
     const server = app.listen(0)
     const address = server.address() as AddressInfo
 
@@ -85,6 +88,19 @@ describe('createApp', () => {
       expect(selectResponse.status).toBe(200)
       expect(selectHtml).toContain('Imagem selecionada')
       expect(selectHtml).toContain('uploads/avatar-1')
+
+      const deleteResponse = await fetch(`${baseUrl}/gallery/delete`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ publicId: 'uploads/avatar-1' }).toString(),
+      })
+      const deleteHtml = await deleteResponse.text()
+
+      expect(deleteResponse.status).toBe(200)
+      expect(deleteGalleryImageUseCase.execute).toHaveBeenCalledWith({ publicId: 'uploads/avatar-1' })
+      expect(deleteHtml).toContain('Imagem removida com sucesso.')
     } finally {
       server.close()
     }
