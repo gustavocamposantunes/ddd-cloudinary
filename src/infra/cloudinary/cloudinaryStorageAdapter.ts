@@ -1,5 +1,5 @@
-import { cloudinary } from './cloudinaryClient.js'
-import type { FileUploadInput, FileUploadResult, IFileStorage } from '../../domain/contracts/IFileStorage.js'
+import { cloudinary } from './cloudinaryClient'
+import type { FileUploadInput, FileUploadResult, IFileStorage } from '../../domain/contracts/IFileStorage'
 
 type CloudinaryUploadResult = {
   public_id: string

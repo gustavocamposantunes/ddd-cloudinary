@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const uploadMock = vi.fn()
 const destroyMock = vi.fn()
 
-vi.mock('./cloudinaryClient.js', () => ({
+vi.mock('./cloudinaryClient', () => ({
   cloudinary: {
     uploader: {
       upload: uploadMock,
