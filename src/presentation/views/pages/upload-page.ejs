@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 0; background: #f4f7fb; color: #102033; }
+      main { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+      .card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(16, 32, 51, 0.08); }
+      label { display: block; margin-top: 16px; font-weight: 700; }
+      input { width: 100%; padding: 12px 14px; margin-top: 6px; border: 1px solid #c8d4e3; border-radius: 10px; }
+      button { margin-top: 20px; padding: 12px 18px; border: 0; border-radius: 10px; background: #0f62fe; color: #fff; font-weight: 700; cursor: pointer; }
+      .alert { margin-top: 20px; padding: 14px 16px; border-radius: 10px; }
+      .alert.error { background: #fff1f0; color: #a61b1b; }
+      .alert.success { background: #eef8f3; color: #116b3a; }
+      dl { display: grid; grid-template-columns: 180px 1fr; gap: 12px 16px; margin-top: 16px; }
+      dt { font-weight: 700; }
+      dd { margin: 0; word-break: break-word; }
+      .hint { color: #5c6f82; margin-top: 8px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="card">
+        <h1><%= title %></h1>
+        <p class="hint">Submit a file path and folder to route it through the Data layer and into Cloudinary.</p>
+
+        <form method="post" action="/upload">
+          <label for="path">File path</label>
+          <input id="path" name="path" value="<%= formValues?.path || '' %>" placeholder="/tmp/avatar.jpg" required />
+
+          <label for="folder">Folder</label>
+          <input id="folder" name="folder" value="<%= formValues?.folder || '' %>" placeholder="avatars" />
+
+          <label for="mimeType">Mime type</label>
+          <input id="mimeType" name="mimeType" value="<%= formValues?.mimeType || '' %>" placeholder="image/jpeg" />
+
+          <label for="originalName">Original name</label>
+          <input id="originalName" name="originalName" value="<%= formValues?.originalName || '' %>" placeholder="avatar.jpg" />
+
+          <button type="submit">Upload to Cloudinary</button>
+        </form>
+
+        <% if (errorMessage) { %>
+          <div class="alert error"><%= errorMessage %></div>
+        <% } %>
+
+        <% if (uploadResult) { %>
+          <div class="alert success">
+            <strong>Upload completed.</strong>
+            <dl>
+              <dt>Public ID</dt>
+              <dd><%= uploadResult.publicId %></dd>
+              <dt>Secure URL</dt>
+              <dd><a href="<%= uploadResult.secureUrl %>"><%= uploadResult.secureUrl %></a></dd>
+              <dt>Bytes</dt>
+              <dd><%= uploadResult.bytes %></dd>
+              <dt>Format</dt>
+              <dd><%= uploadResult.format || '-' %></dd>
+              <dt>Resource type</dt>
+              <dd><%= uploadResult.resourceType %></dd>
+            </dl>
+          </div>
+        <% } %>
+      </section>
+    </main>
+  </body>
+</html>
