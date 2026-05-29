@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { AddressInfo } from 'node:net'
-import { createApp } from './app.js'
+import { createApp } from './app'
 
 describe('createApp', () => {
   afterEach(() => {

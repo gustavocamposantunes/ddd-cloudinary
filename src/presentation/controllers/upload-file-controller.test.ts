@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { UploadFileController } from './upload-file-controller.js'
+import { UploadFileController } from './upload-file-controller'
 
 function createResponseMock() {
   return {

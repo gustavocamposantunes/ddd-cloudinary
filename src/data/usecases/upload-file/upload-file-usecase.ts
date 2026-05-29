@@ -1,4 +1,4 @@
-import type { FileUploadInput, FileUploadResult, IFileStorage } from '../../../domain/contracts/IFileStorage.js'
+import type { FileUploadInput, FileUploadResult, IFileStorage } from '../../../domain/contracts/IFileStorage'
 
 export type UploadFileUseCaseInput = {
   file: FileUploadInput

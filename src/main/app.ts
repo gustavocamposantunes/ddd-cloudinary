@@ -1,8 +1,8 @@
 import express from 'express'
 import path from 'node:path'
-import type { UploadFileUseCase } from '../data/usecases/upload-file/upload-file-usecase.js'
-import { UploadFileController } from '../presentation/controllers/upload-file-controller.js'
-import { createUploadFileRoutes } from '../presentation/routes/upload-file-routes.js'
+import type { UploadFileUseCase } from '../data/usecases/upload-file/upload-file-usecase'
+import { UploadFileController } from '../presentation/controllers/upload-file-controller'
+import { createUploadFileRoutes } from '../presentation/routes/upload-file-routes'
 
 export type AppDependencies = {
   uploadFileUseCase: Pick<UploadFileUseCase, 'execute'>

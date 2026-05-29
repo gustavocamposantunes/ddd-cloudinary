@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { FileUploadInput, FileUploadResult, IFileStorage } from '../../../domain/contracts/IFileStorage.js'
-import { UploadFileUseCase } from './upload-file-usecase.js'
+import type { FileUploadInput, FileUploadResult, IFileStorage } from '../../../domain/contracts/IFileStorage'
+import { UploadFileUseCase } from './upload-file-usecase'
 
 class FileStorageSpy implements IFileStorage {
   public uploadCalls: Array<{ file: FileUploadInput; folder?: string }> = []

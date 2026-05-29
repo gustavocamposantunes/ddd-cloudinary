@@ -1,4 +1,4 @@
-import { cloudinary } from './cloudinaryClient'
+import { cloudinary, ensureCloudinaryConfigured } from './cloudinaryClient'
 import type { FileUploadInput, FileUploadResult, IFileStorage } from '../../domain/contracts/IFileStorage'
 
 type CloudinaryUploadResult = {
@@ -24,6 +24,8 @@ export class CloudinaryStorageAdapter implements IFileStorage {
   }
 
   async upload(file: FileUploadInput, folder = this.folder): Promise<FileUploadResult> {
+    ensureCloudinaryConfigured()
+
     const result = await cloudinary.uploader.upload(this.toUploadPayload(file), {
       folder,
       resource_type: this.resourceType,
@@ -41,6 +43,8 @@ export class CloudinaryStorageAdapter implements IFileStorage {
   }
 
   async delete(publicId: string): Promise<void> {
+    ensureCloudinaryConfigured()
+
     await cloudinary.uploader.destroy(publicId, {
       resource_type: this.resourceType,
     })

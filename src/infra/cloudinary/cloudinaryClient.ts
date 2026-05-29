@@ -1,5 +1,3 @@
-/// <reference types="node" />
-
 import { v2 as cloudinary } from 'cloudinary'
 import { z } from 'zod'
 
@@ -9,12 +7,22 @@ const cloudinaryEnvSchema = z.object({
   CLOUDINARY_API_SECRET: z.string().min(1),
 })
 
-const cloudinaryEnv = cloudinaryEnvSchema.parse(process.env)
+let isConfigured = false
 
-cloudinary.config({
-  cloud_name: cloudinaryEnv.CLOUDINARY_CLOUD_NAME,
-  api_key: cloudinaryEnv.CLOUDINARY_API_KEY,
-  api_secret: cloudinaryEnv.CLOUDINARY_API_SECRET,
-})
+function ensureCloudinaryConfigured(): void {
+  if (isConfigured) {
+    return
+  }
 
-export { cloudinary }
+  const cloudinaryEnv = cloudinaryEnvSchema.parse(process.env)
+
+  cloudinary.config({
+    cloud_name: cloudinaryEnv.CLOUDINARY_CLOUD_NAME,
+    api_key: cloudinaryEnv.CLOUDINARY_API_KEY,
+    api_secret: cloudinaryEnv.CLOUDINARY_API_SECRET,
+  })
+
+  isConfigured = true
+}
+
+export { cloudinary, ensureCloudinaryConfigured }

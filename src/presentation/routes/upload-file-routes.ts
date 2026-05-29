@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import type { UploadFileController } from '../controllers/upload-file-controller.js'
+import type { UploadFileController } from '../controllers/upload-file-controller'
 
 export function createUploadFileRoutes(controller: UploadFileController): Router {
   const router = Router()

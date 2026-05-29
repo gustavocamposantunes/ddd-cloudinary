@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
-import type { FileUploadResult } from '../../domain/contracts/IFileStorage.js'
-import type { UploadFileUseCase, UploadFileUseCaseInput } from '../../data/usecases/upload-file/upload-file-usecase.js'
+import type { FileUploadResult } from '../../domain/contracts/IFileStorage'
+import type { UploadFileUseCase, UploadFileUseCaseInput } from '../../data/usecases/upload-file/upload-file-usecase'
 
 export interface UploadFileControllerDependencies {
   uploadFileUseCase: Pick<UploadFileUseCase, 'execute'>

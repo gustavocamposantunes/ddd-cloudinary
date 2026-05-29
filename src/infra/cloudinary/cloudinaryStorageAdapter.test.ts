@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const uploadMock = vi.fn()
 const destroyMock = vi.fn()
+const ensureCloudinaryConfiguredMock = vi.fn()
 
 vi.mock('./cloudinaryClient', () => ({
   cloudinary: {
@@ -10,12 +11,14 @@ vi.mock('./cloudinaryClient', () => ({
       destroy: destroyMock,
     },
   },
+  ensureCloudinaryConfigured: ensureCloudinaryConfiguredMock,
 }))
 
 describe('CloudinaryStorageAdapter', () => {
   beforeEach(() => {
     uploadMock.mockReset()
     destroyMock.mockReset()
+    ensureCloudinaryConfiguredMock.mockReset()
   })
 
   it('converts buffer uploads into a data uri and forwards the configured folder', async () => {
@@ -27,7 +30,7 @@ describe('CloudinaryStorageAdapter', () => {
       resource_type: 'image',
     })
 
-    const { CloudinaryStorageAdapter } = await import('./cloudinaryStorageAdapter.js')
+    const { CloudinaryStorageAdapter } = await import('./cloudinaryStorageAdapter')
     const storage = new CloudinaryStorageAdapter({ folder: 'avatars' })
 
     const result = await storage.upload({
@@ -36,6 +39,7 @@ describe('CloudinaryStorageAdapter', () => {
     })
 
     expect(uploadMock).toHaveBeenCalledOnce()
+    expect(ensureCloudinaryConfiguredMock).toHaveBeenCalledOnce()
     expect(uploadMock).toHaveBeenCalledWith('data:image/jpeg;base64,ZmFrZS1pbWFnZS1ieXRlcw==', {
       folder: 'avatars',
       resource_type: 'image',
@@ -59,7 +63,7 @@ describe('CloudinaryStorageAdapter', () => {
     })
     destroyMock.mockResolvedValue({ result: 'ok' })
 
-    const { CloudinaryStorageAdapter } = await import('./cloudinaryStorageAdapter.js')
+    const { CloudinaryStorageAdapter } = await import('./cloudinaryStorageAdapter')
     const storage = new CloudinaryStorageAdapter({ resourceType: 'raw' })
 
     await storage.upload({ path: '/tmp/report.pdf' }, 'documents')
@@ -69,6 +73,7 @@ describe('CloudinaryStorageAdapter', () => {
       folder: 'documents',
       resource_type: 'raw',
     })
+    expect(ensureCloudinaryConfiguredMock).toHaveBeenCalledTimes(2)
     expect(destroyMock).toHaveBeenCalledWith('documents/report-1', {
       resource_type: 'raw',
     })
